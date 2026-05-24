@@ -27,6 +27,7 @@ class TestContent(TestCase):
             slug='reader-slug',
             author=cls.reader
         )
+
     def test_note_in_object_list(self):
         self.client.force_login(self.author)
         response = self.client.get(reverse('notes:list'))
