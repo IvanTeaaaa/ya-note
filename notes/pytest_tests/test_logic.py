@@ -21,7 +21,7 @@ def test_user_can_create_note(author_client, author, form_data):
     url = reverse('notes:add')
     # В POST-запросе отправляем данные, полученные из фикстуры form_data:
     response = author_client.post(url, data=form_data)
-    # Проверяем, что был выполнен редирект на страницу успешного добавления заметки:
+    # Проверяем, что был выполнен редирект на страницу успешного добавления:
     assertRedirects(response, reverse('notes:success'))
     # Считаем общее количество заметок в БД, ожидаем 1 заметку.
     assert Note.objects.count() == 1
@@ -35,8 +35,9 @@ def test_user_can_create_note(author_client, author, form_data):
     assert new_note.author == author
     # Вроде бы здесь нарушен принцип "один тест - одна проверка";
     # но если хоть одна из этих проверок провалится -
-    # весь тест можно признать провалившимся, а последующие невыполненные проверки
-    # не внесли бы в отчёт о тесте ничего принципиально важного.
+    # весь тест можно признать провалившимся, а последующие невыполненные
+    # проверки не внесли бы в отчёт о тесте ничего принципиально важного.
+
 
 # Добавляем маркер, который обеспечит доступ к базе данных:
 @pytest.mark.django_db
@@ -60,7 +61,11 @@ def test_not_unique_slug(author_client, note, form_data):
     # Пытаемся создать новую заметку:
     response = author_client.post(url, data=form_data)
     # Проверяем, что в ответе содержится ошибка формы для поля slug:
-    assertFormError(response.context['form'], 'slug', errors=(note.slug + WARNING))
+    assertFormError(
+        response.context['form'],
+        'slug',
+        errors=(note.slug + WARNING)
+    )
     # Убеждаемся, что количество заметок в базе осталось равным 1:
     assert Note.objects.count() == 1
 
@@ -105,7 +110,8 @@ def test_other_user_cant_edit_note(not_author_client, form_data, note):
     assert response.status_code == HTTPStatus.NOT_FOUND
     # Получаем новый объект запросом из БД.
     note_from_db = Note.objects.get(id=note.id)
-    # Проверяем, что атрибуты объекта из БД равны атрибутам заметки до запроса.
+    # Проверяем, что атрибуты объекта из БД равны атрибутам
+    # заметки до запроса.
     assert note.title == note_from_db.title
     assert note.text == note_from_db.text
     assert note.slug == note_from_db.slug

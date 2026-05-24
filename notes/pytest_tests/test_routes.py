@@ -16,6 +16,7 @@ def test_home_availability_for_anonymous_user(client):
     response = client.get(url)
     assert response.status_code == HTTPStatus.OK
 
+
 @pytest.mark.parametrize(
     'name',  # Имя параметра функции.
     # Значения, которые будут передаваться в name.
@@ -25,10 +26,11 @@ def test_home_availability_for_anonymous_user(client):
 def test_pages_availability_for_anonymous_user(client, name):
     url = reverse(name)  # Получаем ссылку на нужный адрес.
     if name == 'users:logout':
-        response = client.post(url)  # logout в Django 5 вызывается POST-запросом
+        response = client.post(url)  # logout в Django 5 вызывается POST
         assert response.status_code == HTTPStatus.FOUND
     response = client.get(url)  # Выполняем запрос.
     assert response.status_code == HTTPStatus.OK
+
 
 @pytest.mark.parametrize(
     'name',
@@ -38,6 +40,7 @@ def test_pages_availability_for_auth_user(not_author_client, name):
     url = reverse(name)
     response = not_author_client.get(url)
     assert response.status_code == HTTPStatus.OK
+
 
 # Добавляем к тесту ещё один декоратор parametrize; в его параметры
 # нужно передать фикстуры-клиенты и ожидаемый код ответа для каждого клиента.
@@ -66,6 +69,7 @@ def test_pages_availability_for_different_users(
     response = parametrized_client.get(url)
     # Ожидаем ответ страницы, указанный в expected_status:
     assert response.status_code == expected_status
+
 
 @pytest.mark.parametrize(
     # Вторым параметром передаём note_object == args,

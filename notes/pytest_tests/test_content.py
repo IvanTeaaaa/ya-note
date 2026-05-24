@@ -1,5 +1,6 @@
 # test_content.py
 import pytest
+
 from pytest_lazyfixture import lazy_fixture as lf
 from django.urls import reverse
 
@@ -35,7 +36,8 @@ def test_notes_list_for_different_users(
         # Для тестирования страницы создания заметки
         # никакие дополнительные аргументы для reverse() не нужны.
         ('notes:add', None),
-        # Для тестирования страницы редактирования заметки нужен slug заметки.
+        # Для тестирования страницы редактирования заметки
+        # нужен slug заметки.
         ('notes:edit', lf('slug_for_args'))
     )
 )
